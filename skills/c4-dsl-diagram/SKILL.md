@@ -1,5 +1,5 @@
 ---
-name: c4-dsl-structurizr
+name: c4-dsl-diagram
 description: Generate C4 model architecture diagrams using Structurizr DSL with a modular !include structure. Supports Structurizr CLI, Structurizr Lite, and Structurizr vNext. Triggers include "architecture diagram", "C4 diagram", "structurizr", "C1", "C2", "C3".
 ---
 
