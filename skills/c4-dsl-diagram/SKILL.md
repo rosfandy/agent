@@ -55,8 +55,12 @@ Explore the actual project codebase to identify architecture layers:
 
 - Place component groups in the correct container's `components/` folder
 - Each module gets its own `.dsl` file
-- Follow naming: component alias matches the import function name
-- File path description must match the actual project path
+- **C3 maps to function level** — each component must represent a specific exported function from the actual source code. Do NOT generalize:
+  - ✅ `loginPin = component "loginPin" "auth/service.ts" "Validates PIN login"`
+  - ✅ `loginPassword = component "loginPassword" "auth/service.ts" "Validates email/password"`
+  - ❌ `authService = component "authService" "auth/service.ts" "Auth service functions"`
+- Component alias should match the exported function name from the source file
+- File path in the description must be the actual relative path from project root
 
 ### 4. Add or Update Relationships
 
