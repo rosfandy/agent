@@ -67,8 +67,11 @@ Explore the actual project codebase to identify architecture layers:
 ### 5. Add or Update Views
 
 - C1-C2: `views/system.dsl` (only if not exists)
-- C3 React views: `views/react/<module>.dsl` — no actors allowed
-- C3 Electron views: `views/electron/<module>.dsl` — no actors allowed
+- **C3: one file per module** — do NOT combine multiple modules into a single view file. Each module gets its own `.dsl` file under the container's views folder:
+  - ✅ `views/react/login.dsl`, `views/react/products.dsl`, `views/react/shift.dsl` (separate files)
+  - ❌ `views/react/all-pages.dsl` (single file for everything)
+- Same rule applies to Electron views: `views/electron/auth.dsl`, `views/electron/pos.dsl`, etc.
+- C3 views scope to a container — no actors allowed
 - Flow views: `views/flow/<module>.dsl` — include numbered steps, actors allowed
 
 ### 6. Validate
@@ -152,9 +155,9 @@ docs/architecture/
         ├── deployment.dsl     ← D view
         ├── styles.dsl         ← element styling
         ├── <container>/       ← C3 component views per container
-        │   └── *.dsl
+        │   └── <module>.dsl   ← one file per module (NOT combined into one)
         └── flow/              ← Dynamic flow views
-            └── *.dsl
+            └── <module>.dsl   ← one file per flow
 ```
 
 ### File Examples
@@ -317,6 +320,40 @@ docker run -it --rm -p 8080:8080 \
 - **`containerInstance`** — reference containers inside deployment nodes
 - **Windows path** — Git Bash converts `C:/` to `/c/`; use `winpty` or absolute path
 - **No built-in C4 Code view** — use `component` view + tag `"Code"` instead
+
+---
+
+## Auto-generated Files
+
+### Makefile
+
+Generate a `Makefile` at the same level as `workspace.dsl` (inside `docs/architecture/`) with targets for common Structurizr operations:
+
+```makefile
+STRUCTURIZR := java -cp "../tools;../tools/lib/*" com.structurizr.cli.StructurizrCliApplication
+
+.PHONY: validate export clean
+
+validate:
+	$(STRUCTURIZR) validate -w workspace.dsl
+
+export:
+	$(STRUCTURIZR) export -w workspace.dsl -f plantuml -o ../diagrams/
+
+clean:
+	rm -rf diagrams/
+```
+
+Include this Makefile generation in the scaffolding step when the project does not yet have one. Use relative paths so it works regardless of project root.
+
+### .gitignore
+
+Add `.structurizr/` to `.gitignore` — this directory is created by Structurizr Lite at runtime (contains cache, logs, and generated thumbnails). It should not be committed:
+
+```gitignore
+# Structurizr runtime data
+docs/architecture/.structurizr/
+```
 
 ---
 
